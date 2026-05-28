@@ -8,24 +8,24 @@ const createLog = require('./server/logger');
 const app = express();
 const port = 6970; //Do not change this port, it is the default port for Cisco HTTP Provisioning
 
-
 //Verify data.json is intact (or use custom)
-const dataFile = process.env.DATA_FILE || "./src/data/data.json";
+const dataFile = process.env.DATA_FILE || './src/data/data.json';
 
 //Clear Console
 //console.clear();
 console.log('\n');
 console.log('\x1b[36m%s\x1b[0m', '[SERVER] Starting server...');
 
-
 dotenv.config();
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
-}));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 },
+    }),
+);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -38,8 +38,8 @@ app.use('*/shared', express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'data')));
 
 //Recursively load routes from the routes directory O(n) * O(1) = O(n).
-function loadRoutes(app, dir) { 
-    fs.readdirSync(dir).forEach(file => {
+function loadRoutes(app, dir) {
+    fs.readdirSync(dir).forEach((file) => {
         const filePath = path.join(dir, file);
         if (fs.statSync(filePath).isDirectory()) {
             loadRoutes(app, filePath); // recursively load routes in subdirectories
@@ -48,12 +48,12 @@ function loadRoutes(app, dir) {
             if (typeof route === 'function') {
                 route(app);
                 const relativePath = path.relative(path.join(__dirname, 'routes'), filePath);
-                console.log("Routed -> " + relativePath);
-                createLog(0, "Routed -> " + relativePath);
+                console.log('Routed -> ' + relativePath);
+                createLog(0, 'Routed -> ' + relativePath);
             }
         }
     });
-}//Tested and working
+} //Tested and working
 
 loadRoutes(app, path.join(__dirname, 'routes'));
 
@@ -62,7 +62,7 @@ require('./server/auth')(app);
 require('./server/rmtReprovision')(app);
 
 //Debugging Modules
-if (process.env.IS_DEBUG.toLowerCase() === "true") {
+if (process.env.IS_DEBUG.toLowerCase() === 'true') {
     require('./server/debugdump')(app);
 }
 
@@ -79,22 +79,20 @@ try {
 process.totalProvisioningRequests = 0;
 process.totalProvisioningErrors = 0;
 
-
 console.log('\x1b[32m%s\x1b[0m', '[OK] Initial Configuration Loaded.');
-createLog(1, "Initial Configuration Loaded.");
+createLog(1, 'Initial Configuration Loaded.');
 
 app.listen(port, () => {
-    console.log(`\x1b[36m%s\x1b[0m`, `[SERVER] Server started on port ${port}`);
-    createLog(1, "Server started on port " + port);
+    console.log(`\x1b[36m%s\x1b[0m`, `[SERVER] Server started on port ${port} - https://localhost:${port}/login`);
+    createLog(1, 'Server started on port ' + port );
 });
 
 app.get('/', (req, res) => {
     res.send('CPM Server. To Log In, go to /login');
-    
 });
 
 //404 route
 app.use((req, res) => {
     const correlationId = crypto.randomBytes(16).toString('hex');
-    res.status(404).send('<!DOCTYPE html><html>404 - Page Not Found <br> Correlation ID: ' + correlationId + "</html>")
+    res.status(404).send('<!DOCTYPE html><html>404 - Page Not Found <br> Correlation ID: ' + correlationId + '</html>');
 });

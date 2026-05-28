@@ -81,6 +81,27 @@
                     "192.168.1.2"
                 ]
             }
+        },
+        {
+            "uuid": "9ae5dee1-dbec-43ae-9152-8a76a8ec1252",
+            "model": "Other, SPA/(g) models, Legacy, or Backlit Only",
+            "groups": "None",
+            "name": "3L VALERIA",
+            "description": "3L SRL Operativo",
+            "createdAt": "2025-10-02T00:05:53.733Z",
+            "createdBy": "admin",
+            "extension": "402",
+            "ip": "93.34.88.102",
+            "lastPing": "Never",
+            "mac": "7802B171E55E",
+            "provisioningFile": "SEP7802B171E55E.cnf.xml",
+            "enabled": true,
+            "security": {
+                "ipWhitelist": [
+                    "",
+                    ""
+                ]
+            }
         }
     ],
     "backgrounds": [
